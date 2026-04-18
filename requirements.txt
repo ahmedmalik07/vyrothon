@@ -1,0 +1,13 @@
+fastapi
+uvicorn[standard]
+sqlalchemy
+psycopg2-binary
+pgvector
+face_recognition
+pillow
+python-multipart
+python-dotenv
+numpy
+opencv-python-headless
+pytest
+httpx

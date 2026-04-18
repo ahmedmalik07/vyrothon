@@ -1,0 +1,155 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Wyibe Engine | Admin Dashboard</title>
+    <link rel="stylesheet" href="/static/style.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+</head>
+<body>
+    <nav class="sidebar">
+        <div class="brand">
+            <div class="brand-icon" style="background: none; border-radius: 8px; overflow: hidden; padding: 0;">
+                <img src="/static/wyibe.jpg" alt="Wyibe Logo" style="width: 100%; height: 100%; object-fit: cover;">
+            </div>
+            <h2>Wyibe</h2>
+        </div>
+        <ul class="nav-links">
+            <li class="active" data-target="auth-view">
+                <svg viewBox="0 0 24 24" stroke="currentColor"><circle cx="12" cy="12" r="10"></circle><path d="M12 16v-4"></path><path d="M12 8h.01"></path></svg>
+                Selfie Engine
+            </li>
+            <li data-target="explorer-view">
+                <svg viewBox="0 0 24 24" stroke="currentColor"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path><circle cx="9" cy="7" r="4"></circle><path d="M23 21v-2a4 4 0 0 0-3-3.87"></path><path d="M16 3.13a4 4 0 0 1 0 7.75"></path></svg>
+                Identity Database
+            </li>
+            <li data-target="ingest-view">
+                <svg viewBox="0 0 24 24" stroke="currentColor"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="17 8 12 3 7 8"></polyline><line x1="12" y1="3" x2="12" y2="15"></line></svg>
+                Data Ingestion
+            </li>
+        </ul>
+        <div class="api-status" id="api-status">
+            <span class="status-dot"></span> System Online
+        </div>
+    </nav>
+
+    <main class="content">
+
+        <!-- Selfie Auth View -->
+        <section id="auth-view" class="view active">
+            <header class="view-header">
+                <h1>Selfie Retrieval Engine</h1>
+                <p>Upload a face to authenticate and retrieve associated deep-linked imagery.</p>
+            </header>
+            
+            <div class="grid-2">
+                <div class="card auth-card">
+                    <h3>Biometric Input</h3>
+                    <div class="upload-zone" id="upload-zone">
+                        <input type="file" id="selfie-file" accept="image/*" hidden>
+                        <div class="upload-content" id="upload-content">
+                            <svg viewBox="0 0 24 24" width="48" height="48" stroke="var(--primary)" stroke-width="1.5" fill="none"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect><circle cx="8.5" cy="8.5" r="1.5"></circle><polyline points="21 15 16 10 5 21"></polyline></svg>
+                            <p id="file-name-display">Drag & Drop or Click to Upload</p>
+                        </div>
+                        <video id="webcam-video" autoplay playsinline style="display:none;"></video>
+                        <canvas id="webcam-canvas" style="display:none;"></canvas>
+                    </div>
+
+                    <div class="flex-actions">
+                        <button id="start-camera-btn" class="btn secondary">Live Camera</button>
+                        <button id="capture-btn" class="btn secondary" style="display:none;">Capture Frame</button>
+                    </div>
+                    
+                    <button id="auth-btn" class="btn primary full-width" disabled>Authenticate</button>
+                    
+                    <div id="auth-result" class="alert hidden"></div>
+                </div>
+
+                <div class="card results-card" style="display: flex; flex-direction: column;">
+                    <h3>Verified Photos</h3>
+                    <div id="gallery-container" class="gallery-grid" style="flex: 1; overflow-y: auto;">
+                        <div class="empty-state">
+                            <svg viewBox="0 0 24 24" stroke="currentColor"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect><path d="M7 11V7a5 5 0 0 1 10 0v4"></path></svg>
+                            <p>Authentication Required</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Identity Explorer View -->
+        <section id="explorer-view" class="view">
+            <header class="view-header">
+                <h1>Identity Database</h1>
+                <p>Explore all unique mathematical vector identities indexed across the entire system.</p>
+                <button id="refresh-faces-btn" class="btn primary" style="margin-top: 1rem;">Refresh Database</button>
+            </header>
+
+            <div class="stats-row" id="db-stats">
+                <div class="stat-box">
+                    <h4>Total Identities</h4>
+                    <h2 id="total-id-count">0</h2>
+                </div>
+            </div>
+
+            <div class="card">
+                <div class="table-container">
+                    <table class="data-table">
+                        <thead>
+                            <tr>
+                                <th>Identity UUID (Grab ID)</th>
+                                <th>Linked Photos</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody id="faces-table-body">
+                            <tr><td colspan="3" style="text-align: center;">Click Refresh to load indexing registry.</td></tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </section>
+
+        <!-- Data Ingestion View -->
+        <section id="ingest-view" class="view">
+            <header class="view-header">
+                <h1>Data Ingestion Engine</h1>
+                <p>Crawl designated directories, extract 128-d face encodings, and write vectors to the DB.</p>
+            </header>
+
+            <div class="card console-card">
+                <h3>System Ingestion Protocol</h3>
+                <div class="input-group">
+                    <label>Target Directory (Local Server Path)</label>
+                    <input type="text" id="ingest-path" class="text-input" value="d:/vyrothon/photos">
+                </div>
+                
+                <button id="trigger-ingest-btn" class="btn primary">Initialize Vector Extraction</button>
+
+                <!-- Live Working Terminal Simulation -->
+                <div class="terminal" id="ingest-terminal">
+                    <div class="terminal-header">
+                        <span class="dot red"></span><span class="dot yellow"></span><span class="dot green"></span>
+                    </div>
+                    <div class="terminal-body" id="terminal-logs">
+                        <p class="log system">Wyibe Ingestion Server Standby.</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+    </main>
+
+    <!-- Modal for viewing Admin images -->
+    <div id="admin-modal" class="modal">
+        <div class="modal-content">
+            <span class="close-modal">&times;</span>
+            <h3 id="modal-title">Identity Photos</h3>
+            <div id="modal-gallery" class="gallery-grid"></div>
+        </div>
+    </div>
+
+    <script src="/static/app.js"></script>
+</body>
+</html>
