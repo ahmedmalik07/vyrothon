@@ -128,11 +128,19 @@ def list_faces(db: Session = Depends(get_db)):
 # ============================================================
 import os
 os.makedirs("frontend", exist_ok=True)
-app.mount("/static", StaticFiles(directory="frontend"), name="static")
 
 @app.get("/", summary="Serve Frontend HTML", tags=["Frontend"])
 def serve_frontend():
     return FileResponse("frontend/index.html")
+
+@app.get("/style.css", include_in_schema=False)
+def serve_css(): return FileResponse("frontend/style.css")
+
+@app.get("/app.js", include_in_schema=False)
+def serve_js(): return FileResponse("frontend/app.js")
+
+@app.get("/wyibe.jpg", include_in_schema=False)
+def serve_logo(): return FileResponse("frontend/wyibe.jpg")
 
 @app.get("/images/file/{image_id}", summary="Get Raw Image", tags=["Images"])
 def get_raw_image(image_id: str, db: Session = Depends(get_db)):
