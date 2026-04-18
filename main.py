@@ -138,6 +138,7 @@ def serve_frontend():
 def get_raw_image(image_id: str, db: Session = Depends(get_db)):
     from models import Image
     import uuid
+    import traceback
     from fastapi import HTTPException
     
     try:
@@ -145,14 +146,16 @@ def get_raw_image(image_id: str, db: Session = Depends(get_db)):
     except ValueError:
         raise HTTPException(status_code=400, detail="Invalid UUID")
 
+    # SQLAlchemy SQLite UUID bug: check standard, then fallback to .hex strip
     img = db.query(Image).filter(Image.id == query_id).first()
+    if not img:
+        img = db.query(Image).filter(Image.id == query_id.hex).first()
+            
     if not img:
         raise HTTPException(status_code=404, detail="Image not found in DB")
         
     filepath = img.filepath
     if not os.path.exists(filepath):
-        # Fallback for GitHub clones: try looking in local ./photos folder
-        import os.path
         person_folder = os.path.basename(os.path.dirname(filepath))
         filename = os.path.basename(filepath)
         fallback_path = os.path.join(".", "photos", person_folder, filename)
