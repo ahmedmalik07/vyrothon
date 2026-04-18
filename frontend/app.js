@@ -1,8 +1,7 @@
 document.addEventListener('DOMContentLoaded', () => {
     // 🔥 Vercel Deployment Setup:
-    // If hosting frontend on Vercel, replace this empty string with your Ngrok URL!
-    // Example: const API_BASE = 'https://1234-abcd.ngrok-free.app';
-    const API_BASE = '';
+    // This is connected safely to the localhost.run public HTTPS tunnel!
+    const API_BASE = 'https://aa7b4c7c137a98.lhr.life';
 
     // --- Navigation ---
     const navLinks = document.querySelectorAll('.nav-links li');
