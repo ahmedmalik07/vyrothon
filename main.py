@@ -146,9 +146,23 @@ def get_raw_image(image_id: str, db: Session = Depends(get_db)):
         raise HTTPException(status_code=400, detail="Invalid UUID")
 
     img = db.query(Image).filter(Image.id == query_id).first()
-    if not img or not os.path.exists(img.filepath):
-        raise HTTPException(status_code=404, detail="Image not found")
-    return FileResponse(img.filepath)
+    if not img:
+        raise HTTPException(status_code=404, detail="Image not found in DB")
+        
+    filepath = img.filepath
+    if not os.path.exists(filepath):
+        # Fallback for GitHub clones: try looking in local ./photos folder
+        import os.path
+        person_folder = os.path.basename(os.path.dirname(filepath))
+        filename = os.path.basename(filepath)
+        fallback_path = os.path.join(".", "photos", person_folder, filename)
+        
+        if os.path.exists(fallback_path):
+            filepath = fallback_path
+        else:
+            raise HTTPException(status_code=404, detail="Image file physically missing")
+            
+    return FileResponse(filepath)
 
 app.include_router(ingest.router)
 app.include_router(auth.router)
