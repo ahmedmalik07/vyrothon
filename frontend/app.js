@@ -1,7 +1,7 @@
 document.addEventListener('DOMContentLoaded', () => {
     // 🔥 Vercel Deployment Setup:
     // This is connected safely to the localhost.run public HTTPS tunnel!
-    const API_BASE = 'https://aa7b4c7c137a98.lhr.life';
+    const API_BASE = 'https://494353aff1a4ad.lhr.life';
 
     // --- Navigation ---
     const navLinks = document.querySelectorAll('.nav-links li');
